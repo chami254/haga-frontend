@@ -48,9 +48,9 @@ export default function Footer() {
           className="text-center sm:text-left"
         >
           <h3 className="text-lg font-semibold text-gold-500 mb-4">Contact</h3>
-          <p className="text-sm text-gold-300 mb-2">📍 Ngong Road, Nairobi, Kenya</p>
-          <p className="text-sm text-gold-300 mb-2">📞 +254 712 345 678</p>
-          <p className="text-sm text-gold-300 mb-4">✉️ support@hagagandi.com</p>
+          <p className="text-sm text-gold-300 mb-2">📍 416 Nyerere Road, Magogo, Geita</p>
+          <p className="text-sm text-gold-300 mb-2">📞 +255 767782575</p>
+          <p className="text-sm text-gold-300 mb-4">✉️ hagainvesent.ltd@gmail.com</p>
 
           <div className="flex justify-center sm:justify-start space-x-4 mt-2">
             <a href="#" className="hover:text-gold-400 transition"><InstagramLogoIcon className="w-5 h-5" /></a>

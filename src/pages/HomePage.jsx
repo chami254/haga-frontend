@@ -73,12 +73,12 @@ export default function HomePage() {
       Book your car repair, track progress, and drive off with confidence.
     </p>
     <Button
-      className={`rounded-2xl px-8 py-2 font-semibold shadow-lg ${
+      className={`rounded-2xl px-8 py-2 font-semibold shadow-lg transition-1s ${
         theme === "dark"
           ? "bg-gold-500 text-dark-900 hover:bg-gold-400"
           : "bg-dark-900 text-gold-400 hover:bg-dark-700"
       }`}
-    >
+    > 
       Book Appointment
     </Button>
   </div>
@@ -124,17 +124,17 @@ export default function HomePage() {
             {
               title: "Diagnostics",
               text: "High-precision computer diagnostics for quick, accurate fault detection.",
-              img: "/src/assets/services/diagnostics.jpg",
+              img: "/services/diagnostics.jpg",
             },
             {
               title: "Repairs",
               text: "Mechanical, body, and electrical repairs with authentic parts and skilled hands.",
-              img: "/src/assets/services/repairs.jpg",
+              img: "/services/repair.jpg",
             },
             {
               title: "Maintenance",
               text: "Scheduled maintenance plans to keep your ride smooth and reliable.",
-              img: "/src/assets/services/maintenance.jpg",
+              img: "/services/maintenance.jpg",
             },
           ].map((service, i) => (
             <motion.div
