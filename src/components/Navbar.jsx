@@ -4,6 +4,9 @@ import { HamburgerMenuIcon, Cross2Icon, SunIcon, MoonIcon } from "@radix-ui/reac
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "../context/ThemeContext";
 import logo from "../assets/logo.jpg";
+import { Globe } from "lucide-react";
+import { useTranslation } from "react-i18next";
+
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -12,7 +15,24 @@ export default function Navbar() {
   const lastScrollY = useRef(0);
   const location = useLocation();
   const { theme, toggleTheme } = useTheme();
+  const { t, i18n } = useTranslation();
+ 
 
+  const toggleLanguage = () => {
+    console.log("i18n object:", i18n);
+    console.log("typeof i18n.changeLanguage:", typeof i18n.changeLanguage);
+    console.log("i18n.changeLanguage:", i18n.changeLanguage);
+    console.log("Current language:", i18n.language);
+    const newLang = i18n.language === "en" ? "sw" : "en";
+    console.log("Switching to language:", newLang);
+    if (typeof i18n.changeLanguage === 'function') {
+      i18n.changeLanguage(newLang);
+    } else {
+      console.error("i18n.changeLanguage is not a function");
+    }
+  };
+  
+  
   // Handle scroll
   useEffect(() => {
     const handleScroll = () => {
@@ -45,23 +65,25 @@ export default function Navbar() {
       >
         <div className="max-w-6xl mx-auto px-6 flex justify-between items-center py-3">
           {/* Logo & Brand */}
-          <div className="flex items-center space-x-3">
-            <img src={logo} alt="HagaGandi Logo" className="w-10 h-10 rounded-full" />
-            <motion.h1
-              animate={{ scale: scrolled ? 0.95 : 1 }}
-              transition={{ duration: 0.3 }}
-              className="text-2xl font-bold text-gold-500"
-            >
-              HagaGandi
-            </motion.h1>
-          </div>
+          <Link to="/">
+            <div className="flex items-center space-x-3">
+              <img src={logo} alt="HagaGandi Logo" className="w-10 h-10 rounded-full" />
+              <motion.h1
+                animate={{ scale: scrolled ? 0.95 : 1 }}
+                transition={{ duration: 0.3 }}
+                className="text-2xl font-bold text-gold-500"
+              >
+                HagaGandi
+              </motion.h1>
+            </div>
+          </Link>
 
           {/* Desktop Menu */}
           <ul className="hidden md:flex space-x-8 text-base">
-            <li><Link to="/" className={isActive("/")}>Home</Link></li>
-            <li><Link to="/book" className={isActive("/book")}>Book</Link></li>
-            <li><Link to="/dashboard" className={isActive("/dashboard")}>Dashboard</Link></li>
-            <li><Link to="/login" className={isActive("/login")}>Admin</Link></li>
+            <li><Link to="/" className={isActive("/")}>{t("navHome")}</Link></li>
+            <li><Link to="/book" className={isActive("/book")}>{t("navBook")}</Link></li>
+            <li><Link to="/dashboard" className={isActive("/dashboard")}>{t("navDashboard")}</Link></li>
+            <li><Link to="/login" className={isActive("/login")}>{t("navAdmin")}</Link></li>
           </ul>
 
           {/* Mobile Menu Toggle */}
@@ -84,10 +106,10 @@ export default function Navbar() {
               className="md:hidden bg-black text-gold-300 border-t border-gold-700"
             >
               <ul className="flex flex-col space-y-3 px-6 py-4">
-                <li><Link onClick={() => setMenuOpen(false)} to="/">Home</Link></li>
-                <li><Link onClick={() => setMenuOpen(false)} to="/book">Book</Link></li>
-                <li><Link onClick={() => setMenuOpen(false)} to="/dashboard">Dashboard</Link></li>
-                <li><Link onClick={() => setMenuOpen(false)} to="/login">Admin</Link></li>
+                <li><Link onClick={() => setMenuOpen(false)} to="/">{t("navHome")}</Link></li>
+                <li><Link onClick={() => setMenuOpen(false)} to="/book">{t("navBook")}</Link></li>
+                <li><Link onClick={() => setMenuOpen(false)} to="/dashboard">{t("navDashboard")}</Link></li>
+                <li><Link onClick={() => setMenuOpen(false)} to="/login">{t("navAdmin")}</Link></li>
               </ul>
             </motion.div>
           )}
@@ -116,6 +138,27 @@ export default function Navbar() {
         ) : (
           <MoonIcon className="w-6 h-6" />
         )}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6 }}
+          className="absolute inset-0 rounded-full bg-gold-500/10 blur-md pointer-events-none"
+        />
+      </motion.button>
+
+      {/* === FLOATING TRANSLATION TOGGLE BUTTON === */}
+      <motion.button
+        onClick={toggleLanguage}
+        whileTap={{ scale: 0.9 }}
+        animate={{
+          boxShadow: "0 0 20px rgba(255,191,0,0.6)"
+        }}
+        transition={{ duration: 0.4, ease: "easeInOut" }}
+        className={`fixed bottom-6 left-6 z-50 w-12 h-12 rounded-full flex items-center justify-center
+          bg-gold-500 text-black hover:bg-gold-400 transition-all shadow-lg`}
+        title="Change Language"
+      >
+        <Globe className="w-6 h-6" />
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { useTheme } from "../context/ThemeContext";
 import { Button } from "../components/ui/button";
 import Footer from "../components/Footer";
 import { Bell, Car } from "lucide-react"; // icons
+import { useTranslation } from "react-i18next";
 
 export default function ClientDashboard() {
   const { theme } = useTheme();
+  const { t } = useTranslation();
 
   // Simulated booking data
   const [bookingStatus, setBookingStatus] = useState("upcoming"); // "upcoming" | "active" | "complete"
@@ -193,7 +195,7 @@ export default function ClientDashboard() {
         )}
       </div>
 
-      <Footer />
+      
     </div>
   );
 }

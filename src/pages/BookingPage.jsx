@@ -5,9 +5,11 @@ import { Button } from "../components/ui/button";
 import Footer from "../components/Footer";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { useTranslation } from "react-i18next";
 
 export default function BookingPage() {
   const { theme } = useTheme();
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -64,10 +66,10 @@ export default function BookingPage() {
           transition={{ duration: 0.6 }}
           className="text-4xl font-bold mb-4"
         >
-          Book an Appointment
+          {t("bookingTitle")}
         </motion.h1>
         <p className="text-lg opacity-80">
-          Schedule your next visit with HagaGandi. We’ll get your car running perfectly.
+          {t("bookingSubtitle")}
         </p>
       </div>
 
@@ -85,7 +87,7 @@ export default function BookingPage() {
             name="name"
             value={formData.name}
             onChange={handleChange}
-            placeholder="Full Name"
+            placeholder={t("bookingName")}
             className="p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gold-400"
             required
           />
@@ -94,7 +96,7 @@ export default function BookingPage() {
             name="email"
             value={formData.email}
             onChange={handleChange}
-            placeholder="Email"
+            placeholder={t("bookingEmail")}
             className="p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gold-400"
             required
           />
@@ -112,7 +114,7 @@ export default function BookingPage() {
             name="carModel"
             value={formData.carModel}
             onChange={handleChange}
-            placeholder="Car Model"
+            placeholder={t("bookingCar")}
             className="p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gold-400"
             required
           />
@@ -124,10 +126,10 @@ export default function BookingPage() {
             className="p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gold-400"
             required
           >
-            <option value="">Select Service</option>
-            <option value="diagnostics">Diagnostics</option>
-            <option value="repairs">Repairs</option>
-            <option value="maintenance">Maintenance</option>
+            <option value="">{t("bookingService")}</option>
+            <option value="diagnostics">{t("serviceDiagnostics")}</option>
+            <option value="repairs">{t("serviceRepairs")}</option>
+            <option value="maintenance">{t("serviceMaintenance")}</option>
           </select>
 
           {/* Date Picker */}
@@ -135,7 +137,7 @@ export default function BookingPage() {
             <DatePicker
               selected={selectedDate}
               onChange={(date) => setSelectedDate(date)}
-              placeholderText="Select Date"
+              placeholderText={t("bookingDate")}
               className="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gold-400"
               minDate={new Date()}
               required
@@ -175,7 +177,7 @@ export default function BookingPage() {
                 Processing...
               </>
             ) : (
-              "Confirm Booking"
+              t("bookingSubmit")
             )}
           </Button>
         </div>

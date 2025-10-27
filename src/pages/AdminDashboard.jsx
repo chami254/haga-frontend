@@ -1,12 +1,14 @@
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { useTheme } from "../context/ThemeContext";
 import { Button } from "../components/ui/button";
 import Footer from "../components/Footer";
 import { Wrench, Send, CheckCircle } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function AdminDashboard() {
   const { theme } = useTheme();
+  const { t } = useTranslation();
 
   // Mock bookings data
   const [bookings, setBookings] = useState([
@@ -77,8 +79,8 @@ export default function AdminDashboard() {
   const sendNotification = (type) => {
     alert(
       type === "progress"
-        ? `Progress update sent to ${selectedBooking.client}`
-        : `Completion alert sent to ${selectedBooking.client}`
+        ? `${t("progressUpdate")} ${selectedBooking.client}`
+        : `${t("completionAlert")} ${selectedBooking.client}`
     );
   };
 
@@ -92,15 +94,15 @@ export default function AdminDashboard() {
         {/* Header */}
         <div className="flex justify-between items-center mb-10">
           <div>
-            <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-            <p className="opacity-80">Manage bookings and repair progress.</p>
+            <h1 className="text-3xl font-bold">{t("dashboardTitle")}</h1>
+            <p className="opacity-80">{t("dashboardSubtitle")}</p>
           </div>
           <Wrench className="w-10 h-10 text-gold-500" />
         </div>
 
         {/* Bookings Selector */}
         <div className="mb-8">
-          <label className="block mb-2 font-semibold">Select Booking:</label>
+          <label className="block mb-2 font-semibold">{t("selectBooking")}</label>
           <select
             value={selectedBooking.id}
             onChange={(e) =>
@@ -185,7 +187,7 @@ export default function AdminDashboard() {
               type="text"
               value={newTask}
               onChange={(e) => setNewTask(e.target.value)}
-              placeholder="Add new repair task"
+              placeholder={t("addTask")}
               className="flex-1 p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gold-400"
             />
             <Button
@@ -210,7 +212,7 @@ export default function AdminDashboard() {
                   : "bg-dark-900 text-gold-400 hover:bg-dark-700"
               }`}
             >
-              <Send className="w-5 h-5" /> Send Progress Update
+              <Send className="w-5 h-5" /> {t("sendProgress")}
             </Button>
             <Button
               onClick={() => {
@@ -223,7 +225,7 @@ export default function AdminDashboard() {
                   : "bg-green-700 text-white hover:bg-green-600"
               }`}
             >
-              <CheckCircle className="w-5 h-5" /> Mark as Complete
+              <CheckCircle className="w-5 h-5" /> {t("markComplete")}
             </Button>
           </div>
         </motion.div>
