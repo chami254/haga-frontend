@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useTheme } from "../context/ThemeContext";
 import { Button } from "../components/ui/button";
-import Footer from "../components/Footer";
 import { Bell, Car } from "lucide-react"; // icons
 import { useTranslation } from "react-i18next";
 
