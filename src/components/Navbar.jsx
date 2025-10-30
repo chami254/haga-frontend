@@ -1,12 +1,18 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { HamburgerMenuIcon, Cross2Icon, SunIcon, MoonIcon } from "@radix-ui/react-icons";
+import {
+  HamburgerMenuIcon,
+  Cross2Icon,
+  SunIcon,
+  MoonIcon,
+} from "@radix-ui/react-icons";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "../context/ThemeContext";
 import logo from "../assets/logo.jpg";
 import { Globe } from "lucide-react";
 import { useTranslation } from "react-i18next";
-
+import i18n from "../i18n";
+import toast, { Toaster } from "react-hot-toast"; // ✅ Import Toast
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -15,25 +21,37 @@ export default function Navbar() {
   const lastScrollY = useRef(0);
   const location = useLocation();
   const { theme, toggleTheme } = useTheme();
-  const { t, i18n } = useTranslation();
- 
+  const { t } = useTranslation();
 
+  // 🌍 Toggle Language
   const toggleLanguage = () => {
-    console.log("i18n object:", i18n);
-    console.log("typeof i18n.changeLanguage:", typeof i18n.changeLanguage);
-    console.log("i18n.changeLanguage:", i18n.changeLanguage);
-    console.log("Current language:", i18n.language);
     const newLang = i18n.language === "en" ? "sw" : "en";
-    console.log("Switching to language:", newLang);
-    if (typeof i18n.changeLanguage === 'function') {
+
+    if (typeof i18n.changeLanguage === "function") {
       i18n.changeLanguage(newLang);
+      toast.success(
+        newLang === "sw"
+          ? "✅ Lugha imebadilishwa kuwa Kiswahili 🇹🇿"
+          : "✅ Language switched to English 🇬🇧",
+        {
+          style: {
+            background: theme === "dark" ? "#111" : "#fff",
+            color: theme === "dark" ? "#f6c453" : "#000",
+            border: "1px solid #f6c453",
+            fontWeight: "600",
+          },
+          iconTheme: {
+            primary: "#f6c453",
+            secondary: theme === "dark" ? "#111" : "#fff",
+          },
+        }
+      );
     } else {
-      console.error("i18n.changeLanguage is not a function");
+      console.error("❌ i18n.changeLanguage is not a function");
     }
   };
-  
-  
-  // Handle scroll
+
+  // 🔄 Handle scroll visibility and shadow
   useEffect(() => {
     const handleScroll = () => {
       const currentY = window.scrollY;
@@ -56,7 +74,9 @@ export default function Navbar() {
       <motion.nav
         animate={{
           y: visible ? 0 : -90,
-          backgroundColor: scrolled ? "rgba(0,0,0,0.95)" : "rgba(0,0,0,0.8)",
+          backgroundColor: scrolled
+            ? "rgba(0,0,0,0.95)"
+            : "rgba(0,0,0,0.8)",
           backdropFilter: "blur(10px)",
           boxShadow: scrolled ? "0 2px 10px rgba(0,0,0,0.4)" : "none",
         }}
@@ -67,7 +87,11 @@ export default function Navbar() {
           {/* Logo & Brand */}
           <Link to="/">
             <div className="flex items-center space-x-3">
-              <img src={logo} alt="HagaGandi Logo" className="w-10 h-10 rounded-full" />
+              <img
+                src={logo}
+                alt="HagaGandi Logo"
+                className="w-10 h-10 rounded-full"
+              />
               <motion.h1
                 animate={{ scale: scrolled ? 0.95 : 1 }}
                 transition={{ duration: 0.3 }}
@@ -80,10 +104,26 @@ export default function Navbar() {
 
           {/* Desktop Menu */}
           <ul className="hidden md:flex space-x-8 text-base">
-            <li><Link to="/" className={isActive("/")}>{t("navHome")}</Link></li>
-            <li><Link to="/book" className={isActive("/book")}>{t("navBook")}</Link></li>
-            <li><Link to="/dashboard" className={isActive("/dashboard")}>{t("navDashboard")}</Link></li>
-            <li><Link to="/login" className={isActive("/login")}>{t("navAdmin")}</Link></li>
+            <li>
+              <Link to="/" className={isActive("/")}>
+                {t("navHome")}
+              </Link>
+            </li>
+            <li>
+              <Link to="/book" className={isActive("/book")}>
+                {t("navBook")}
+              </Link>
+            </li>
+            <li>
+              <Link to="/dashboard" className={isActive("/dashboard")}>
+                {t("navDashboard")}
+              </Link>
+            </li>
+            <li>
+              <Link to="/login" className={isActive("/login")}>
+                {t("navAdmin")}
+              </Link>
+            </li>
           </ul>
 
           {/* Mobile Menu Toggle */}
@@ -91,7 +131,11 @@ export default function Navbar() {
             className="md:hidden text-gold-500"
             onClick={() => setMenuOpen(!menuOpen)}
           >
-            {menuOpen ? <Cross2Icon className="w-6 h-6" /> : <HamburgerMenuIcon className="w-6 h-6" />}
+            {menuOpen ? (
+              <Cross2Icon className="w-6 h-6" />
+            ) : (
+              <HamburgerMenuIcon className="w-6 h-6" />
+            )}
           </button>
         </div>
 
@@ -106,10 +150,26 @@ export default function Navbar() {
               className="md:hidden bg-black text-gold-300 border-t border-gold-700"
             >
               <ul className="flex flex-col space-y-3 px-6 py-4">
-                <li><Link onClick={() => setMenuOpen(false)} to="/">{t("navHome")}</Link></li>
-                <li><Link onClick={() => setMenuOpen(false)} to="/book">{t("navBook")}</Link></li>
-                <li><Link onClick={() => setMenuOpen(false)} to="/dashboard">{t("navDashboard")}</Link></li>
-                <li><Link onClick={() => setMenuOpen(false)} to="/login">{t("navAdmin")}</Link></li>
+                <li>
+                  <Link onClick={() => setMenuOpen(false)} to="/">
+                    {t("navHome")}
+                  </Link>
+                </li>
+                <li>
+                  <Link onClick={() => setMenuOpen(false)} to="/book">
+                    {t("navBook")}
+                  </Link>
+                </li>
+                <li>
+                  <Link onClick={() => setMenuOpen(false)} to="/dashboard">
+                    {t("navDashboard")}
+                  </Link>
+                </li>
+                <li>
+                  <Link onClick={() => setMenuOpen(false)} to="/login">
+                    {t("navAdmin")}
+                  </Link>
+                </li>
               </ul>
             </motion.div>
           )}
@@ -120,17 +180,20 @@ export default function Navbar() {
       <motion.button
         onClick={toggleTheme}
         whileTap={{ scale: 0.9 }}
-        animate={{ 
+        animate={{
           rotate: theme === "dark" ? 0 : 180,
-          boxShadow: theme === "dark" 
-            ? "0 0 20px rgba(255,191,0,0.6)" 
-            : "0 0 25px rgba(0,0,0,0.3)" 
+          boxShadow:
+            theme === "dark"
+              ? "0 0 20px rgba(255,191,0,0.6)"
+              : "0 0 25px rgba(0,0,0,0.3)",
         }}
         transition={{ duration: 0.4, ease: "easeInOut" }}
         className={`fixed bottom-6 right-6 z-50 w-12 h-12 rounded-full flex items-center justify-center 
-          ${theme === "dark" 
-            ? "bg-gold-500 text-black hover:bg-gold-400" 
-            : "bg-dark-900 text-gold-500 hover:bg-dark-700"} 
+          ${
+            theme === "dark"
+              ? "bg-gold-500 text-black hover:bg-gold-400"
+              : "bg-dark-900 text-gold-500 hover:bg-dark-700"
+          } 
           transition-all shadow-lg`}
       >
         {theme === "dark" ? (
@@ -138,12 +201,6 @@ export default function Navbar() {
         ) : (
           <MoonIcon className="w-6 h-6" />
         )}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6 }}
-          className="absolute inset-0 rounded-full bg-gold-500/10 blur-md pointer-events-none"
-        />
       </motion.button>
 
       {/* === FLOATING TRANSLATION TOGGLE BUTTON === */}
@@ -151,7 +208,7 @@ export default function Navbar() {
         onClick={toggleLanguage}
         whileTap={{ scale: 0.9 }}
         animate={{
-          boxShadow: "0 0 20px rgba(255,191,0,0.6)"
+          boxShadow: "0 0 20px rgba(255,191,0,0.6)",
         }}
         transition={{ duration: 0.4, ease: "easeInOut" }}
         className={`fixed bottom-6 left-6 z-50 w-12 h-12 rounded-full flex items-center justify-center
@@ -159,14 +216,10 @@ export default function Navbar() {
         title="Change Language"
       >
         <Globe className="w-6 h-6" />
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6 }}
-          className="absolute inset-0 rounded-full bg-gold-500/10 blur-md pointer-events-none"
-        />
       </motion.button>
 
+      {/* === TOAST CONTAINER === */}
+      <Toaster position="top-center" reverseOrder={false} />
     </>
   );
 }
