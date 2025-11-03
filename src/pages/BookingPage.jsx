@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "../context/ThemeContext";
 import { Button } from "../components/ui/button";
@@ -6,10 +6,20 @@ import Footer from "../components/Footer";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useTranslation } from "react-i18next";
+import { fetchUsers } from "../services/api";
 
 export default function BookingPage() {
   const { theme } = useTheme();
   const { t } = useTranslation();
+
+  // Fetch backend data (testing API connection)
+  useEffect(() => {
+    fetchUsers()
+      .then((data) => console.log("✅ API Connected:", data))
+      .catch((err) => console.error("❌ API Connection Failed:", err));
+  }, []);
+
+  // Form states
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -22,11 +32,13 @@ export default function BookingPage() {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
+  // Handle input changes
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  // Handle submit
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Validation
@@ -41,13 +53,29 @@ export default function BookingPage() {
     )
       return;
 
-    // Simulate async request
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
+
+    try {
+      const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+      const res = await fetch(`${API_URL}/api/bookings`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...formData,
+          date: selectedDate,
+          time: selectedTime,
+        }),
+      });
+
+      if (!res.ok) throw new Error("Booking failed");
+
       setSubmitted(true);
       setTimeout(() => setSubmitted(false), 3000);
-    }, 2500); // 2.5 second loading simulation
+    } catch (error) {
+      console.error("Booking error:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -68,9 +96,7 @@ export default function BookingPage() {
         >
           {t("bookingTitle")}
         </motion.h1>
-        <p className="text-lg opacity-80">
-          {t("bookingSubtitle")}
-        </p>
+        <p className="text-lg opacity-80">{t("bookingSubtitle")}</p>
       </div>
 
       {/* Booking Form */}
@@ -118,7 +144,6 @@ export default function BookingPage() {
             className="p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gold-400"
             required
           />
-
           <select
             name="serviceType"
             value={formData.serviceType}
@@ -213,7 +238,7 @@ export default function BookingPage() {
         )}
       </AnimatePresence>
 
-      <Footer />
+      
     </div>
   );
 }

@@ -7,6 +7,7 @@ import { Wrench, Send, CheckCircle } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
+import { fetchUsers } from "../services/api"; // ✅ central API fetch file
 
 export default function AdminDashboard() {
   const { theme } = useTheme();
@@ -19,6 +20,16 @@ export default function AdminDashboard() {
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [newTask, setNewTask] = useState("");
 
+  // ✅ Use environment API base URL for Render
+  const API_URL = process.env.REACT_APP_API_URL;
+
+  // ✅ Log backend connection status (optional)
+  useEffect(() => {
+    fetchUsers()
+      .then((data) => console.log("Users fetched:", data))
+      .catch((err) => console.error("API fetch error:", err));
+  }, []);
+
   // ✅ Verify token and fetch dashboard data
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -28,8 +39,7 @@ export default function AdminDashboard() {
       return;
     }
 
-    // Verify token with backend
-    fetch("http://localhost:5000/api/admin/dashboard", {
+    fetch(`${API_URL}/api/admin/dashboard`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(async (res) => {
@@ -63,13 +73,15 @@ export default function AdminDashboard() {
         navigate("/login");
       })
       .finally(() => setLoading(false));
-  }, [navigate]);
+  }, [navigate, API_URL]);
 
   if (loading)
     return (
       <div
         className={`min-h-screen flex items-center justify-center ${
-          theme === "dark" ? "bg-dark-900 text-gold-500" : "bg-gold-100 text-dark-900"
+          theme === "dark"
+            ? "bg-dark-900 text-gold-500"
+            : "bg-gold-100 text-dark-900"
         }`}
       >
         <motion.div
@@ -104,7 +116,10 @@ export default function AdminDashboard() {
       b.id === selectedBooking.id
         ? {
             ...b,
-            repairs: [...b.repairs, { id: Date.now(), task: newTask, done: false }],
+            repairs: [
+              ...b.repairs,
+              { id: Date.now(), task: newTask, done: false },
+            ],
           }
         : b
     );
@@ -130,14 +145,17 @@ export default function AdminDashboard() {
   };
 
   const total = selectedBooking?.repairs.length || 0;
-  const completed = selectedBooking?.repairs.filter((r) => r.done).length || 0;
+  const completed =
+    selectedBooking?.repairs.filter((r) => r.done).length || 0;
   const progress = total > 0 ? Math.round((completed / total) * 100) : 0;
 
   // === Render ===
   return (
     <div
       className={`min-h-screen flex flex-col ${
-        theme === "dark" ? "bg-dark-900 text-gold-300" : "bg-gold-50 text-dark-900"
+        theme === "dark"
+          ? "bg-dark-900 text-gold-300"
+          : "bg-gold-50 text-dark-900"
       }`}
     >
       <Toaster position="top-center" />
@@ -155,11 +173,15 @@ export default function AdminDashboard() {
 
         {/* Bookings Selector */}
         <div className="mb-8">
-          <label className="block mb-2 font-semibold">{t("selectBooking")}</label>
+          <label className="block mb-2 font-semibold">
+            {t("selectBooking")}
+          </label>
           <select
             value={selectedBooking?.id}
             onChange={(e) =>
-              setSelectedBooking(bookings.find((b) => b.id === +e.target.value))
+              setSelectedBooking(
+                bookings.find((b) => b.id === +e.target.value)
+              )
             }
             className="p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gold-400"
           >
@@ -177,7 +199,9 @@ export default function AdminDashboard() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           className={`rounded-2xl p-6 shadow-lg border ${
-            theme === "dark" ? "bg-dark-800 border-gold-500" : "bg-white border-gold-400"
+            theme === "dark"
+              ? "bg-dark-800 border-gold-500"
+              : "bg-white border-gold-400"
           }`}
         >
           <h2 className="text-xl font-semibold mb-4">
@@ -275,7 +299,7 @@ export default function AdminDashboard() {
         </motion.div>
       </div>
 
-      <Footer />
+      
     </div>
   );
 }

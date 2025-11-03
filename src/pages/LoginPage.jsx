@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useTheme } from "../context/ThemeContext";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
+import { fetchUsers } from "../services/api";
 
 export default function Login() {
   const { theme } = useTheme();
@@ -10,6 +11,11 @@ export default function Login() {
 
   const [formData, setFormData] = useState({ username: "", password: "" });
   const [loading, setLoading] = useState(false);
+
+  // 🔹 Example fetch test to confirm backend connection
+  useEffect(() => {
+    fetchUsers().then((data) => console.log("Fetched users:", data));
+  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -20,7 +26,9 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:5000/api/auth/login", {
+      // ✅ Use your environment-based backend URL
+      const API_URL = process.env.REACT_APP_API_URL;
+      const res = await fetch(`${API_URL}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -34,7 +42,7 @@ export default function Login() {
         return;
       }
 
-      // Save token locally (for future admin-only pages)
+      // Save token & username
       localStorage.setItem("token", data.token);
       localStorage.setItem("username", data.username);
 
@@ -76,10 +84,7 @@ export default function Login() {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label
-              htmlFor="username"
-              className="block font-semibold mb-1 text-sm"
-            >
+            <label htmlFor="username" className="block font-semibold mb-1 text-sm">
               Username
             </label>
             <input
@@ -98,10 +103,7 @@ export default function Login() {
           </div>
 
           <div>
-            <label
-              htmlFor="password"
-              className="block font-semibold mb-1 text-sm"
-            >
+            <label htmlFor="password" className="block font-semibold mb-1 text-sm">
               Password
             </label>
             <input

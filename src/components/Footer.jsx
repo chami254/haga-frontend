@@ -53,9 +53,9 @@ export default function Footer() {
           <p className="text-sm text-gold-300 mb-4">✉️ hagainvesent.ltd@gmail.com</p>
 
           <div className="flex justify-center sm:justify-start space-x-4 mt-2">
-            <a href="#" className="hover:text-gold-400 transition"><InstagramLogoIcon className="w-5 h-5" /></a>
-            <a href="#" className="hover:text-gold-400 transition"><TwitterLogoIcon className="w-5 h-5" /></a>
-            <a href="#" className="hover:text-gold-400 transition"><LinkedInLogoIcon className="w-5 h-5" /></a>
+            <button className="hover:text-gold-400 transition"><InstagramLogoIcon className="w-5 h-5" /></button>
+            <button className="hover:text-gold-400 transition"><TwitterLogoIcon className="w-5 h-5" /></button>
+            <button className="hover:text-gold-400 transition"><LinkedInLogoIcon className="w-5 h-5" /></button>
           </div>
         </motion.div>
       </div>

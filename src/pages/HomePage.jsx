@@ -4,27 +4,34 @@ import { useTheme } from "../context/ThemeContext";
 import { Link } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { useTranslation } from "react-i18next";
-
-
-
-const heroImages = [
-  "/hero/car1.jpg",
-  "/hero/car2.jpg",
-  "/hero/car3.jpg",
-  "/hero/car4.jpg",
-];
+import { fetchUsers } from "../services/api"; // ✅ import fetch function
 
 export default function HomePage() {
   const { theme } = useTheme();
   const { t } = useTranslation();
   const [index, setIndex] = useState(0);
 
+  const heroImages = [
+    "/hero/car1.jpg",
+    "/hero/car2.jpg",
+    "/hero/car3.jpg",
+    "/hero/car4.jpg",
+  ];
+
+  // ✅ Test connection to backend
+  useEffect(() => {
+    fetchUsers()
+      .then((data) => console.log("Fetched users from backend:", data))
+      .catch((err) => console.error("Error fetching users:", err));
+  }, []);
+
+  // ✅ Hero image slider
   useEffect(() => {
     const interval = setInterval(() => {
       setIndex((prev) => (prev + 1) % heroImages.length);
     }, 4000);
     return () => clearInterval(interval);
-  }, []);
+  }, [heroImages.length]);
 
   return (
     <div className="flex flex-col items-center text-gold-100 bg-dark-900">
@@ -217,46 +224,6 @@ export default function HomePage() {
             </motion.div>
           ))}
         </div>
-
-        {/* Rate Our Service */}
-        <motion.div
-          initial={{ opacity: 0, y: 60, scale: 0.9 }}
-          whileInView={{ opacity: 1, y: 0, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{
-            type: "spring",
-            stiffness: 100,
-            damping: 10,
-            duration: 0.8,
-          }}
-          className="mt-16 max-w-md mx-auto bg-dark-900 text-gold-500 p-8 rounded-2xl shadow-lg text-center border border-gold-700"
-        >
-          <h3 className="text-2xl font-bold mb-4">{t("testimonialsTitle")}</h3>
-          <p className="mb-6 text-gold-300">
-            {t("testimonialsSubtitle")}
-          </p>
-          <form className="flex flex-col space-y-4">
-            <textarea
-              placeholder="Write your review..."
-              className="p-3 rounded-lg text-dark-900"
-              rows="3"
-            ></textarea>
-            <select className="p-2 rounded-lg text-dark-900">
-              <option value="">Select Rating</option>
-              <option value="5">★★★★★ - Excellent</option>
-              <option value="4">★★★★☆ - Good</option>
-              <option value="3">★★★☆☆ - Average</option>
-              <option value="2">★★☆☆☆ - Poor</option>
-              <option value="1">★☆☆☆☆ - Terrible</option>
-            </select>
-            <button
-              type="submit"
-              className="bg-gold-500 text-dark-900 font-semibold py-2 rounded-lg hover:bg-gold-700 transition"
-            >
-              Submit Feedback
-            </button>
-          </form>
-        </motion.div>
       </section>
     </div>
   );

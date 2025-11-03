@@ -4,10 +4,18 @@ import { useTheme } from "../context/ThemeContext";
 import { Button } from "../components/ui/button";
 import { Bell, Car } from "lucide-react"; // icons
 import { useTranslation } from "react-i18next";
+import { fetchUsers } from "../services/api"; // ✅ correctly imported
 
 export default function ClientDashboard() {
   const { theme } = useTheme();
   const { t } = useTranslation();
+
+  // ✅ Fetch backend data (you can later replace this with specific client data)
+  useEffect(() => {
+    fetchUsers()
+      .then((data) => console.log("Fetched users:", data))
+      .catch((err) => console.error("Error fetching users:", err));
+  }, []);
 
   // Simulated booking data
   const [bookingStatus, setBookingStatus] = useState("upcoming"); // "upcoming" | "active" | "complete"
@@ -38,7 +46,9 @@ export default function ClientDashboard() {
   return (
     <div
       className={`min-h-screen flex flex-col ${
-        theme === "dark" ? "bg-dark-900 text-gold-300" : "bg-gold-50 text-dark-900"
+        theme === "dark"
+          ? "bg-dark-900 text-gold-300"
+          : "bg-gold-50 text-dark-900"
       }`}
     >
       <div className="px-6 py-12 max-w-5xl mx-auto flex-1 w-full relative">
@@ -78,16 +88,18 @@ export default function ClientDashboard() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             className={`p-8 rounded-2xl shadow-md text-center ${
-              theme === "dark" ? "bg-dark-800 border border-gold-500" : "bg-white border border-gold-300"
+              theme === "dark"
+                ? "bg-dark-800 border border-gold-500"
+                : "bg-white border border-gold-300"
             }`}
           >
-            <h2 className="text-2xl font-semibold mb-4">{t("upcomingAppointment")}</h2>
+            <h2 className="text-2xl font-semibold mb-4">
+              {t("upcomingAppointment")}
+            </h2>
             <p className="mb-2">📅 {t("appointmentDate")} 2025-10-15</p>
             <p className="mb-2">🕙 {t("appointmentTime")} 10:30 AM</p>
             <p className="mb-4">🛠️ {t("serviceType")} Engine Repairs</p>
-            <p className="opacity-80">
-              {t("appointmentScheduled")}
-            </p>
+            <p className="opacity-80">{t("appointmentScheduled")}</p>
           </motion.div>
         )}
 
@@ -99,10 +111,14 @@ export default function ClientDashboard() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
               className={`rounded-2xl p-6 shadow-lg border ${
-                theme === "dark" ? "bg-dark-800 border-gold-500" : "bg-white border-gold-400"
+                theme === "dark"
+                  ? "bg-dark-800 border-gold-500"
+                  : "bg-white border-gold-400"
               }`}
             >
-              <h2 className="text-xl font-semibold mb-4">{t("currentRepairProgress")}</h2>
+              <h2 className="text-xl font-semibold mb-4">
+                {t("currentRepairProgress")}
+              </h2>
 
               {/* Progress Bar with Car Icon */}
               <div className="relative w-full bg-gray-300 dark:bg-dark-600 rounded-full h-4 mb-10 overflow-hidden">
@@ -158,7 +174,13 @@ export default function ClientDashboard() {
               <motion.div
                 animate={
                   requestSent
-                    ? { scale: [1, 1.1, 1], boxShadow: ["0 0 10px #FFD700", "0 0 0px #FFD700"] }
+                    ? {
+                        scale: [1, 1.1, 1],
+                        boxShadow: [
+                          "0 0 10px #FFD700",
+                          "0 0 0px #FFD700",
+                        ],
+                      }
                     : {}
                 }
                 transition={{ duration: 0.6 }}
@@ -172,7 +194,9 @@ export default function ClientDashboard() {
                       : "bg-dark-900 text-gold-400 hover:bg-dark-700"
                   }`}
                 >
-                  {requestSent ? t("requestSent") : t("requestProgressUpdate")}
+                  {requestSent
+                    ? t("requestSent")
+                    : t("requestProgressUpdate")}
                 </Button>
               </motion.div>
             </div>
@@ -193,8 +217,6 @@ export default function ClientDashboard() {
           </motion.div>
         )}
       </div>
-
-      
     </div>
   );
 }
