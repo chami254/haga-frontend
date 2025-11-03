@@ -31,5 +31,19 @@
   "navHome": "Nyumbani",
   "navBook": "Weka Miadi",
   "navDashboard": "Dashibodi",
-  "navAdmin": "Msimamizi"
+  "navAdmin": "Msimamizi",
+
+  "clientWelcome": "Karibu tena,",
+  "upcomingAppointment": "Miadi Inayokuja",
+  "appointmentDate": "Tarehe:",
+  "appointmentTime": "Muda:",
+  "serviceType": "Aina ya Huduma:",
+  "appointmentScheduled": "Miadi yako imepangwa. Utapokea taarifa wakati wa kuleta gari lako.",
+  "currentRepairProgress": "Maendeleo ya Matengenezo ya Sasa",
+  "complete": "Imekamilika",
+  "pending": "Inasubiri",
+  "requestProgressUpdate": "Omba Taarifa ya Maendeleo",
+  "requestSent": "Ombi Limetumwa...",
+  "carReady": "Gari Lako Limekwisha Tayari 🎉",
+  "carReadyMessage": "Huduma zote zimekamilika. Sasa unaweza kuchukua gari lako kutoka Karakana ya HagaGandi."
 }

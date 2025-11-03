@@ -31,5 +31,19 @@
   "navHome": "Home",
   "navBook": "Book",
   "navDashboard": "Dashboard",
-  "navAdmin": "Admin"
+  "navAdmin": "Admin",
+
+  "clientWelcome": "Welcome back,",
+  "upcomingAppointment": "Upcoming Appointment",
+  "appointmentDate": "Date:",
+  "appointmentTime": "Time:",
+  "serviceType": "Service Type:",
+  "appointmentScheduled": "Your appointment is scheduled. You'll receive a notification when it's time to bring your car in.",
+  "currentRepairProgress": "Current Repair Progress",
+  "complete": "Complete",
+  "pending": "Pending",
+  "requestProgressUpdate": "Request Progress Update",
+  "requestSent": "Request Sent...",
+  "carReady": "Your Car is Ready 🎉",
+  "carReadyMessage": "All services have been completed. You can now collect your vehicle from HagaGandi Garage."
 }

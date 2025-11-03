@@ -1,12 +1,14 @@
+import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar";
 import HomePage from "./pages/HomePage";
+import Login from "./pages/LoginPage";
+import AdminDashboard from "./pages/AdminDashboard";
+import PrivateRoute from "./components/PrivateRoute";
+import Navbar from "./components/Navbar";
 import BookingPage from "./pages/BookingPage";
 import ClientDashboard from "./pages/ClientDashboard";
-import AdminDashboard from "./pages/AdminDashboard";
-import Footer from "./components/Footer";
 
-export default function App() {
+function App() {
   return (
     <Router>
       <Navbar />
@@ -14,9 +16,18 @@ export default function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/book" element={<BookingPage />} />
         <Route path="/dashboard" element={<ClientDashboard />} />
-        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/login" element={<Login />} />
+        <Route
+          path="/admin"
+          element={
+            <PrivateRoute>
+              <AdminDashboard />
+            </PrivateRoute>
+          }
+        />
       </Routes>
-      <Footer />
     </Router>
   );
 }
+
+export default App;

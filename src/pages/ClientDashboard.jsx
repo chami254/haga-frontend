@@ -68,7 +68,7 @@ export default function ClientDashboard() {
           className="mb-10"
         >
           <h1 className="text-3xl font-bold mb-2">
-            Welcome back, <span className="text-gold-500">Athman</span> 👋
+            {t("clientWelcome")} <span className="text-gold-500">Athman</span> 👋
           </h1>
         </motion.div>
 
@@ -81,12 +81,12 @@ export default function ClientDashboard() {
               theme === "dark" ? "bg-dark-800 border border-gold-500" : "bg-white border border-gold-300"
             }`}
           >
-            <h2 className="text-2xl font-semibold mb-4">Upcoming Appointment</h2>
-            <p className="mb-2">📅 Date: 2025-10-15</p>
-            <p className="mb-2">🕙 Time: 10:30 AM</p>
-            <p className="mb-4">🛠️ Service Type: Engine Repairs</p>
+            <h2 className="text-2xl font-semibold mb-4">{t("upcomingAppointment")}</h2>
+            <p className="mb-2">📅 {t("appointmentDate")} 2025-10-15</p>
+            <p className="mb-2">🕙 {t("appointmentTime")} 10:30 AM</p>
+            <p className="mb-4">🛠️ {t("serviceType")} Engine Repairs</p>
             <p className="opacity-80">
-              Your appointment is scheduled. You’ll receive a notification when it’s time to bring your car in.
+              {t("appointmentScheduled")}
             </p>
           </motion.div>
         )}
@@ -102,7 +102,7 @@ export default function ClientDashboard() {
                 theme === "dark" ? "bg-dark-800 border-gold-500" : "bg-white border-gold-400"
               }`}
             >
-              <h2 className="text-xl font-semibold mb-4">Current Repair Progress</h2>
+              <h2 className="text-xl font-semibold mb-4">{t("currentRepairProgress")}</h2>
 
               {/* Progress Bar with Car Icon */}
               <div className="relative w-full bg-gray-300 dark:bg-dark-600 rounded-full h-4 mb-10 overflow-hidden">
@@ -146,7 +146,7 @@ export default function ClientDashboard() {
                         task.done ? "text-green-400" : "text-yellow-400"
                       }`}
                     >
-                      {task.done ? "Complete" : "Pending"}
+                      {task.done ? t("complete") : t("pending")}
                     </span>
                   </li>
                 ))}
@@ -172,7 +172,7 @@ export default function ClientDashboard() {
                       : "bg-dark-900 text-gold-400 hover:bg-dark-700"
                   }`}
                 >
-                  {requestSent ? "Request Sent..." : "Request Progress Update"}
+                  {requestSent ? t("requestSent") : t("requestProgressUpdate")}
                 </Button>
               </motion.div>
             </div>
@@ -188,8 +188,8 @@ export default function ClientDashboard() {
               theme === "dark" ? "bg-dark-800" : "bg-white"
             }`}
           >
-            <h2 className="text-2xl font-semibold mb-3">Your Car is Ready 🎉</h2>
-            <p>All services have been completed. You can now collect your vehicle from HagaGandi Garage.</p>
+            <h2 className="text-2xl font-semibold mb-3">{t("carReady")}</h2>
+            <p>{t("carReadyMessage")}</p>
           </motion.div>
         )}
       </div>

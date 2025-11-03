@@ -1,50 +1,98 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useTheme } from "../context/ThemeContext";
 import { Button } from "../components/ui/button";
 import Footer from "../components/Footer";
 import { Wrench, Send, CheckCircle } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function AdminDashboard() {
   const { theme } = useTheme();
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
-  // Mock bookings data
-  const [bookings, setBookings] = useState([
-    {
-      id: 1,
-      client: "Athman Ibrahim",
-      car: "Toyota Premio 2018",
-      service: "Engine Repairs",
-      date: "2025-10-15",
-      status: "active", // "upcoming" | "active" | "complete"
-      repairs: [
-        { id: 1, task: "Engine diagnostics", done: true },
-        { id: 2, task: "Oil change", done: false },
-        { id: 3, task: "Brake replacement", done: false },
-        { id: 4, task: "Interior cleaning", done: false },
-      ],
-    },
-  ]);
-
-  const [selectedBooking, setSelectedBooking] = useState(bookings[0]);
+  const [admin, setAdmin] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [bookings, setBookings] = useState([]);
+  const [selectedBooking, setSelectedBooking] = useState(null);
   const [newTask, setNewTask] = useState("");
 
-  const total = selectedBooking.repairs.length;
-  const completed = selectedBooking.repairs.filter((r) => r.done).length;
-  const progress = Math.round((completed / total) * 100);
+  // ✅ Verify token and fetch dashboard data
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("Please log in first.");
+      navigate("/login");
+      return;
+    }
 
+    // Verify token with backend
+    fetch("http://localhost:5000/api/admin/dashboard", {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(async (res) => {
+        if (!res.ok) throw new Error("Unauthorized");
+        const data = await res.json();
+        setAdmin(data.user);
+
+        // Mock bookings until DB integration
+        const mock = [
+          {
+            id: 1,
+            client: "Athman Ibrahim",
+            car: "Toyota Premio 2018",
+            service: "Engine Repairs",
+            date: "2025-10-15",
+            status: "active",
+            repairs: [
+              { id: 1, task: "Engine diagnostics", done: true },
+              { id: 2, task: "Oil change", done: false },
+              { id: 3, task: "Brake replacement", done: false },
+            ],
+          },
+        ];
+        setBookings(mock);
+        setSelectedBooking(mock[0]);
+      })
+      .catch((err) => {
+        console.error("Auth check failed:", err);
+        localStorage.clear();
+        toast.error("Session expired or invalid. Please log in again.");
+        navigate("/login");
+      })
+      .finally(() => setLoading(false));
+  }, [navigate]);
+
+  if (loading)
+    return (
+      <div
+        className={`min-h-screen flex items-center justify-center ${
+          theme === "dark" ? "bg-dark-900 text-gold-500" : "bg-gold-100 text-dark-900"
+        }`}
+      >
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ repeat: Infinity, duration: 1 }}
+          className="border-4 border-t-gold-500 border-gray-300 rounded-full w-12 h-12"
+        />
+      </div>
+    );
+
+  if (!admin) return null;
+
+  // === Booking management functions ===
   const toggleTask = (id) => {
-    const updated = bookings.map((booking) =>
-      booking.id === selectedBooking.id
+    const updated = bookings.map((b) =>
+      b.id === selectedBooking.id
         ? {
-            ...booking,
-            repairs: booking.repairs.map((task) =>
-              task.id === id ? { ...task, done: !task.done } : task
+            ...b,
+            repairs: b.repairs.map((r) =>
+              r.id === id ? { ...r, done: !r.done } : r
             ),
           }
-        : booking
+        : b
     );
     setBookings(updated);
     setSelectedBooking(updated.find((b) => b.id === selectedBooking.id));
@@ -52,16 +100,13 @@ export default function AdminDashboard() {
 
   const addTask = () => {
     if (!newTask.trim()) return;
-    const updated = bookings.map((booking) =>
-      booking.id === selectedBooking.id
+    const updated = bookings.map((b) =>
+      b.id === selectedBooking.id
         ? {
-            ...booking,
-            repairs: [
-              ...booking.repairs,
-              { id: Date.now(), task: newTask, done: false },
-            ],
+            ...b,
+            repairs: [...b.repairs, { id: Date.now(), task: newTask, done: false }],
           }
-        : booking
+        : b
     );
     setBookings(updated);
     setSelectedBooking(updated.find((b) => b.id === selectedBooking.id));
@@ -77,24 +122,32 @@ export default function AdminDashboard() {
   };
 
   const sendNotification = (type) => {
-    alert(
+    toast.success(
       type === "progress"
-        ? `${t("progressUpdate")} ${selectedBooking.client}`
-        : `${t("completionAlert")} ${selectedBooking.client}`
+        ? `Progress update sent to ${selectedBooking.client}`
+        : `Completion alert sent to ${selectedBooking.client}`
     );
   };
 
+  const total = selectedBooking?.repairs.length || 0;
+  const completed = selectedBooking?.repairs.filter((r) => r.done).length || 0;
+  const progress = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+  // === Render ===
   return (
     <div
       className={`min-h-screen flex flex-col ${
         theme === "dark" ? "bg-dark-900 text-gold-300" : "bg-gold-50 text-dark-900"
       }`}
     >
+      <Toaster position="top-center" />
+
       <div className="px-6 py-12 max-w-6xl mx-auto flex-1 w-full">
-        {/* Header */}
         <div className="flex justify-between items-center mb-10">
           <div>
-            <h1 className="text-3xl font-bold">{t("dashboardTitle")}</h1>
+            <h1 className="text-3xl font-bold">
+              {t("dashboardTitle")} — {admin.username}
+            </h1>
             <p className="opacity-80">{t("dashboardSubtitle")}</p>
           </div>
           <Wrench className="w-10 h-10 text-gold-500" />
@@ -104,11 +157,9 @@ export default function AdminDashboard() {
         <div className="mb-8">
           <label className="block mb-2 font-semibold">{t("selectBooking")}</label>
           <select
-            value={selectedBooking.id}
+            value={selectedBooking?.id}
             onChange={(e) =>
-              setSelectedBooking(
-                bookings.find((b) => b.id === parseInt(e.target.value))
-              )
+              setSelectedBooking(bookings.find((b) => b.id === +e.target.value))
             }
             className="p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gold-400"
           >
@@ -120,7 +171,7 @@ export default function AdminDashboard() {
           </select>
         </div>
 
-        {/* Booking Details */}
+        {/* Progress & tasks */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -130,7 +181,7 @@ export default function AdminDashboard() {
           }`}
         >
           <h2 className="text-xl font-semibold mb-4">
-            {selectedBooking.client}'s Car — {selectedBooking.car}
+            {selectedBooking?.client}'s Car — {selectedBooking?.car}
           </h2>
 
           {/* Progress Bar */}
@@ -141,18 +192,11 @@ export default function AdminDashboard() {
               transition={{ duration: 0.8 }}
               className="h-4 rounded-full bg-gradient-to-r from-gold-400 to-gold-600"
             />
-            <motion.span
-              className="absolute right-2 top-[-22px] text-xs font-semibold"
-              animate={{ opacity: [0, 1, 0] }}
-              transition={{ repeat: Infinity, duration: 3 }}
-            >
-              {progress}%
-            </motion.span>
           </div>
 
-          {/* Task List */}
+          {/* Tasks */}
           <ul className="space-y-3">
-            {selectedBooking.repairs.map((task) => (
+            {selectedBooking?.repairs.map((task) => (
               <li
                 key={task.id}
                 className="flex justify-between items-center bg-opacity-20 p-3 rounded-lg hover:bg-opacity-30 transition"
@@ -181,7 +225,7 @@ export default function AdminDashboard() {
             ))}
           </ul>
 
-          {/* Add New Task */}
+          {/* Add Task */}
           <div className="flex items-center gap-3 mt-6">
             <input
               type="text"
