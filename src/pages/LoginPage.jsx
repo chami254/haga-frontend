@@ -27,7 +27,7 @@ export default function Login() {
 
     try {
       // ✅ Use your environment-based backend URL
-      const API_URL = process.env.REACT_APP_API_URL;
+      const API_URL = process.env.REACT_APP_API_URL= "https://haga-backend.onrender.com";
       const res = await fetch(`${API_URL}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
